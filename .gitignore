@@ -1,17 +1,17 @@
 # Rust build artifacts
-/target/
-/Cargo.lock
+target/
+Cargo.lock
 
 # IDEs
-/.vscode/
-/.idea/
+.vscode/
+.idea/
 *.swp
 *.swo
 
 # OS
 .DS_Store
-/.claude/
+.claude/
 
 # Project specific
-/outputs/
+outputs/
 *.md
