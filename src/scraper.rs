@@ -1,6 +1,5 @@
 use anyhow::{Context, Result};
 use headless_chrome::Browser;
-use std::sync::Arc;
 
 // Embed Readability.js at compile time
 const READABILITY_JS: &str = include_str!("../scripts/Readability.js");
@@ -8,7 +7,7 @@ const READABILITY_JS: &str = include_str!("../scripts/Readability.js");
 pub struct Scraper;
 
 impl Scraper {
-    pub fn scrape_url(browser: Arc<Browser>, url: &str) -> Result<(String, String)> {
+    pub fn scrape_url(browser: Browser, url: &str) -> Result<(String, String)> {
         let tab = browser.new_tab().context("Failed to create new tab")?;
 
         tab.navigate_to(url).context("Failed to navigate")?;
@@ -25,8 +24,7 @@ impl Scraper {
         Ok((markdown, title))
     }
 
-    /// Returns (markdown, title, html)
-    pub fn scrape_readable_url(browser: Arc<Browser>, url: &str) -> Result<(String, String, String)> {
+    pub fn scrape_readable_url(browser: Browser, url: &str) -> Result<(String, String, String)> {
         let tab = browser.new_tab().context("Failed to create new tab")?;
 
         tab.navigate_to(url).context("Failed to navigate")?;

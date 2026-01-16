@@ -1,11 +1,9 @@
 use axum::{
-    extract::{State, Json},
+    extract::Json,
     response::IntoResponse,
     http::StatusCode,
 };
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
-use crate::browser::BrowserManager;
 use crate::scraper::Scraper;
 
 #[derive(Deserialize)]
@@ -26,10 +24,17 @@ pub struct ErrorResponse {
 }
 
 pub async fn scrape_handler(
-    State(browser_manager): State<Arc<BrowserManager>>,
     Json(payload): Json<ScrapeRequest>,
 ) -> impl IntoResponse {
-    let browser = browser_manager.get_browser();
+    let browser = match crate::browser::BrowserManager::create_browser() {
+        Ok(b) => b,
+        Err(e) => {
+            let error_response = ErrorResponse {
+                error: format!("Failed to launch browser: {}", e),
+            };
+            return (StatusCode::INTERNAL_SERVER_ERROR, Json(error_response)).into_response();
+        }
+    };
     
     match Scraper::scrape_url(browser, &payload.url) {
         Ok((markdown, title)) => {
@@ -64,10 +69,17 @@ pub async fn scrape_handler(
 }
 
 pub async fn scrape_readable_handler(
-    State(browser_manager): State<Arc<BrowserManager>>,
     Json(payload): Json<ScrapeRequest>,
 ) -> impl IntoResponse {
-    let browser = browser_manager.get_browser();
+    let browser = match crate::browser::BrowserManager::create_browser() {
+        Ok(b) => b,
+        Err(e) => {
+            let error_response = ErrorResponse {
+                error: format!("Failed to launch browser: {}", e),
+            };
+            return (StatusCode::INTERNAL_SERVER_ERROR, Json(error_response)).into_response();
+        }
+    };
 
     match Scraper::scrape_readable_url(browser, &payload.url) {
         Ok((markdown, title, html)) => {
