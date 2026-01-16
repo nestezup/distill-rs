@@ -1,6 +1,5 @@
 # Rust build artifacts
 target/
-Cargo.lock
 
 # IDEs
 .vscode/
@@ -14,4 +13,3 @@ Cargo.lock
 
 # Project specific
 outputs/
-*.md
